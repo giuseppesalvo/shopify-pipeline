@@ -1,5 +1,6 @@
 const paths = require('./paths')
 const YAML = require('yamljs')
+const os = require('os')
 
 function getIP() {
 
