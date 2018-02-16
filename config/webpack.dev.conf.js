@@ -42,7 +42,7 @@ module.exports = merge(webpackConfig, {
           { loader: 'css-loader' },
           {
               loader: 'postcss-loader',
-              options: { plugins: [autoprefixer(autoprefixerConfig), cssnano] }
+              options: { plugins: [ autoprefixer(autoprefixerConfig) ] }
           },
           { loader: 'sass-loader' }
         ]
