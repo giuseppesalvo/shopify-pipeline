@@ -8,6 +8,17 @@ const webpackConfig = require('./webpack.base.conf')
 const commonExcludes = require('../lib/common-excludes')
 const userWebpackConfig = require('../lib/get-user-webpack-config')('dev')
 
+const autoprefixer = require('autoprefixer')
+const autoprefixerConfig = {
+    browsers: [
+        "last 4 version",
+        "Firefox 15",
+        "> 1%",
+        "IE > 8",
+        "iOS 7"
+    ]
+}
+
 // so that everything is absolute
 webpackConfig.output.publicPath = `${config.domain}:${config.port}/`
 
@@ -29,6 +40,10 @@ module.exports = merge(webpackConfig, {
         use: [
           { loader: 'style-loader' },
           { loader: 'css-loader' },
+          {
+              loader: 'postcss-loader',
+              options: { plugins: [autoprefixer(autoprefixerConfig), cssnano] }
+          },
           { loader: 'sass-loader' }
         ]
       }

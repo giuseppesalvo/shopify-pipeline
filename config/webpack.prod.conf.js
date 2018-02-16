@@ -14,6 +14,16 @@ const AssetTagToShopifyLiquid = require('../lib/asset-tag-to-shopify-liquid')
 const autoprefixer = require('autoprefixer')
 const cssnano = require('cssnano')
 
+const autoprefixerConfig = {
+    browsers: [
+        "last 4 version",
+        "Firefox 15",
+        "> 1%",
+        "IE > 8",
+        "iOS 7"
+    ]
+}
+
 module.exports = merge(webpackConfig, {
   devtool: 'hidden-source-map',
 
@@ -31,7 +41,7 @@ module.exports = merge(webpackConfig, {
             },
             {
               loader: 'postcss-loader',
-              options: { plugins: [autoprefixer, cssnano] }
+              options: { plugins: [autoprefixer(autoprefixerConfig), cssnano] }
             },
             'sass-loader'
           ]
