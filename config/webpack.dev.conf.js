@@ -7,6 +7,7 @@ const config = require('./index')
 const webpackConfig = require('./webpack.base.conf')
 const commonExcludes = require('../lib/common-excludes')
 const userWebpackConfig = require('../lib/get-user-webpack-config')('dev')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 const autoprefixer = require('autoprefixer')
 const autoprefixerConfig = {
@@ -30,22 +31,27 @@ Object.keys(webpackConfig.entry).forEach((name) => {
 })
 
 module.exports = merge(webpackConfig, {
-  devtool: '#eval-source-map',
+  devtool: '#eval',
 
   module: {
     rules: [
       {
         test: /\.s[ac]ss$/,
         exclude: commonExcludes(),
-        use: [
-          { loader: 'style-loader' },
-          { loader: 'css-loader' },
-          {
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: [
+            {
+              loader: 'css-loader',
+              options: { importLoaders: 2, minify: true }
+            },
+            {
               loader: 'postcss-loader',
-              options: { plugins: [ autoprefixer(autoprefixerConfig) ] }
-          },
-          { loader: 'sass-loader' }
-        ]
+              options: { plugins: [autoprefixer(autoprefixerConfig)] }
+            },
+            'sass-loader'
+          ]
+        })
       }
     ]
   },
@@ -54,6 +60,8 @@ module.exports = merge(webpackConfig, {
     new webpack.DefinePlugin({
       'process.env': { NODE_ENV: '"development"' }
     }),
+
+    new ExtractTextPlugin('styles.[contenthash].css'),
 
     new webpack.HotModuleReplacementPlugin(),
 
@@ -64,7 +72,7 @@ module.exports = merge(webpackConfig, {
       filename: '../layout/theme.liquid',
       template: './layout/theme.liquid',
       inject: true,
-      chunksSortMode: 'dependency'
+      chunksSortMode: 'dependency',
       minify: {
         removeComments: true,
         collapseWhitespace: true,
