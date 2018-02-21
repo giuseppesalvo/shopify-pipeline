@@ -63,7 +63,25 @@ module.exports = merge(webpackConfig, {
       excludeChunks: ['static'],
       filename: '../layout/theme.liquid',
       template: './layout/theme.liquid',
-      inject: true
-    })
+      inject: true,
+      chunksSortMode: 'dependency'
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeAttributeQuotes: true
+        // more options:
+        // https://github.com/kangax/html-minifier#options-quick-reference
+      },
+    }),
+
+    // split node_modules/vendors into their own file
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor',
+      minChunks: module => (
+          module.resource &&
+          /\.js$/.test(module.resource) &&
+          module.resource.indexOf(path.join(__dirname, '../node_modules')) === 0
+        )
+    }),
   ]
 }, userWebpackConfig)
